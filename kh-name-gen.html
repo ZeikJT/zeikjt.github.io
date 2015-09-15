@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Kingdom Hearts Name Generator</title>
+    <style>
+      html,body {
+        font-family: Helvetica, Arial, sans-serif;
+      }
+      #output {
+        margin-top: 10px;
+        padding: 0 4px;
+        border: 1px solid #D0D0D0;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+      #output > div {
+        margin: 4px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="generate">Generate KH Name</button>
+    <div id="output"></div>
+    <script>
+      function generateKHName() {
+        var rand = Math.random();
+        var number = ((rand * 0.189) + 2.801);
+        var wordCount = Math.floor(rand * 4) + 1;
+        var wordPool = [
+          'Complete',
+          'Definitive',
+          'Final Chapter',
+          'Final Mix',
+          'HD',
+          'Remastered',
+          'Remix',
+          'Ultimate'
+        ];
+      
+        var name = 'Kingdom Hearts ' + number.toPrecision(4);
+        while (wordCount > 0) {
+          var idx = Math.floor(Math.random() * wordPool.length);
+          name += ' ' + wordPool.splice(idx, 1)[0];
+          wordCount--;
+        }
+        
+        return name;
+      }
+      
+      var outputElem = document.getElementById('output');
+      document.getElementById('generate').onclick = function () {
+        var div = document.createElement('div');
+        div.innerHTML = generateKHName();
+        output.appendChild(div);
+        output.scrollTop = output.scrollHeight;
+      };
+    </script>
+  </body>
+</html>
