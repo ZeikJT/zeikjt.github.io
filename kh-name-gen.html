@@ -59,8 +59,8 @@
       document.getElementById('generate').onclick = function () {
         var div = document.createElement('div');
         div.innerHTML = generateKHName();
-        output.appendChild(div);
-        output.scrollTop = output.scrollHeight;
+        output.insertBefore(div, output.firstChild);
+        output.scrollTop = 0;
       };
     </script>
   </body>
