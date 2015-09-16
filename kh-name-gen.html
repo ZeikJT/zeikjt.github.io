@@ -39,10 +39,11 @@
         opacity: 0;
       }
       .name-row:hover .delete {
-        opacity: 0.5;
+        opacity: 0.25;
       }
       .name-row .delete:hover {
         opacity: 1;
+        cursor: pointer;
       }
       .clear-btn {
         float: right;
@@ -63,7 +64,11 @@
         },
         render: function render() {
           return React.createElement('div', {className: 'name-row'},
-            React.createElement('button', {className: 'delete', onClick: this.deleteName.bind(this)}, 'X'),
+            React.createElement('button', {
+              className: 'delete',
+              title: 'Remove this name from the list',
+              onClick: this.deleteName.bind(this)
+            }, 'X'),
             this.props.nameData.name
           );
         }
@@ -158,10 +163,12 @@
           return React.createElement('div', null,
             React.createElement('button', {
               className: 'generate-btn',
+              title: 'Generate a Kingdom Hearts game name',
               onClick: this.addRow.bind(this)
             }, 'Generate KH Name'),
             React.createElement('button', {
               className: 'clear-btn',
+              title: 'Clear all generated names',
               onClick: this.clear.bind(this)
             }, 'Clear All'),
             React.createElement(NameList, {
