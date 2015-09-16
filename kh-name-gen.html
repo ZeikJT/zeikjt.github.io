@@ -11,7 +11,7 @@
       body {
         margin: 8px;
       }
-      #output {
+      .name-list {
         position: absolute;
         top: 36px;
         bottom: 8px;
@@ -21,47 +21,131 @@
         border: 1px solid #D0D0D0;
         overflow-y: auto;
       }
-      #output > div {
+      .name-row {
         margin: 4px 0;
       }
+      .name-row .delete {
+        margin-right: 10px;
+      }
     </style>
+    <script src="https://fb.me/react-0.13.3.min.js"></script>
   </head>
   <body>
-    <button id="generate">Generate KH Name</button>
-    <div id="output"></div>
+    <div id="root"></div>
     <script>
-      function generateKHName() {
-        var rand = Math.random();
-        var number = ((rand * 0.189) + 2.801);
-        var wordCount = Math.floor(rand * 4) + 1;
-        var wordPool = [
-          'Complete',
-          'Definitive',
-          'Final Chapter',
-          'Final Mix',
-          'HD',
-          'Remastered',
-          'Remix',
-          'Ultimate'
-        ];
-      
-        var name = 'Kingdom Hearts ' + number.toPrecision(4);
-        while (wordCount > 0) {
-          var idx = Math.floor(Math.random() * wordPool.length);
-          name += ' ' + wordPool.splice(idx, 1)[0];
-          wordCount--;
+      var NameRow = React.createClass({
+        displayName: 'NameRow',
+        shouldComponentUpdate: function shouldComponentUpdate() {
+          return false;
+        },
+        deleteName: function deleteName() {
+          this.props.removeRow(this.props.nameData.id);
+        },
+        render: function render() {
+          return React.createElement('div', {className: 'name-row'},
+            React.createElement('button', {className: 'delete', onClick: this.deleteName.bind(this)}, 'X'),
+            this.props.nameData.name
+          );
         }
-        
-        return name;
-      }
-      
-      var outputElem = document.getElementById('output');
-      document.getElementById('generate').onclick = function () {
-        var div = document.createElement('div');
-        div.innerHTML = generateKHName();
-        output.insertBefore(div, output.firstChild);
-        output.scrollTop = 0;
-      };
+      });
+      var NameList = React.createClass({
+        displayName: 'NameList',
+        render: function render() {
+          var namesList = [];
+          var names = this.props.names;
+          var i = 0;
+          var len = names.length;
+          
+          for (; i < len; ++i) {
+            var nameData = names[i];
+            namesList.push(React.createElement(NameRow, {
+              key: nameData.id,
+              nameData: nameData,
+              removeRow: this.props.removeRow
+            }));
+          }
+          
+          return React.createElement('div', {className: 'name-list'}, namesList);
+        }
+      });
+      var App = React.createClass({
+        displayName: 'App',
+        statics: {
+          generateKHName: function generateKHName() {
+            var rand = Math.random();
+            var number = ((rand * 0.189) + 2.801);
+            var wordCount = Math.floor(rand * 4) + 1;
+            var wordPool = [
+              'Complete',
+              'Definitive',
+              'Final Chapter',
+              'Final Mix',
+              'HD',
+              'Remastered',
+              'Remix',
+              'Ultimate'
+            ];
+          
+            var name = 'Kingdom Hearts ' + number.toPrecision(4);
+            while (wordCount > 0) {
+              var idx = Math.floor(Math.random() * wordPool.length);
+              name += ' ' + wordPool.splice(idx, 1)[0];
+              wordCount--;
+            }
+            
+            return name;
+          }
+        },
+        getInitialState: function getInitialState() {
+          return {
+            id: 0,
+            names: []
+          };
+        },
+        addRow: function addRow() {
+          var id = this.state.id;
+          this.setState({
+            id: id + 1,
+            names: [{
+              id: id,
+              name: App.generateKHName()
+            }].concat(this.state.names)
+          });
+        },
+        removeRow: function removeRow(id) {
+          var names = this.state.names;
+          var i = 0;
+          var len = names.length;
+          
+          for (; i < len; ++i) {
+            if (id === names[i].id) {
+              break;
+            }
+          }
+          
+          var arr = this.state.names.slice();
+          arr.splice(i, 1);
+          this.setState({
+            names: arr
+          });
+        },
+        clear: function clear() {
+          this.setState({
+            names: []
+          });
+        },
+        render: function render() {
+          return React.createElement('div', null,
+            React.createElement('button', {onClick: this.addRow.bind(this)}, 'Generate KH Name'),
+            React.createElement('button', {onClick: this.clear.bind(this)}, 'Clear All'),
+            React.createElement(NameList, {removeRow: this.removeRow.bind(this), names: this.state.names})
+          );
+        }
+      });
+      React.render(
+        React.createElement(App),
+        document.getElementById('root')
+      );
     </script>
   </body>
 </html>
