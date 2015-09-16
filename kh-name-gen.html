@@ -36,6 +36,16 @@
       }
       .name-row .delete {
         margin-right: 6px;
+        opacity: 0;
+      }
+      .name-row:hover .delete {
+        opacity: 0.5;
+      }
+      .name-row .delete:hover {
+        opacity: 1;
+      }
+      .clear-btn {
+        float: right;
       }
     </style>
     <script src="https://fb.me/react-0.13.3.min.js"></script>
@@ -150,7 +160,6 @@
               className: 'generate-btn',
               onClick: this.addRow.bind(this)
             }, 'Generate KH Name'),
-            ' ',
             React.createElement('button', {
               className: 'clear-btn',
               onClick: this.clear.bind(this)
